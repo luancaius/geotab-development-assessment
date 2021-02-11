@@ -1,24 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace JokeGenerator
+namespace Provider
 {
-    class JsonFeed
+    public class JsonFeed
     {
-        static string _url = "";
-
-        public JsonFeed() { }
-        public JsonFeed(string endpoint, int results)
+        public string _endpoint;
+        public JsonFeed(string endpoint)
         {
-            _url = endpoint;
+            _endpoint = endpoint;
         }
         
-		public static string[] GetRandomJokes(string firstname, string lastname, string category)
+		public List<String> GetRandomJokes(string firstname, string lastname, string category, int number)
 		{
 			HttpClient client = new HttpClient();
-			client.BaseAddress = new Uri(_url);
+			client.BaseAddress = new Uri(_endpoint);
 			string url = "jokes/random";
 			if (category != null)
 			{
@@ -39,28 +38,23 @@ namespace JokeGenerator
                 joke = firstPart + " " + firstname + " " + lastname + secondPart;
             }
 
-            return new string[] { JsonConvert.DeserializeObject<dynamic>(joke).value };
+            return new List<String> { JsonConvert.DeserializeObject<dynamic>(joke).value };
         }
-
-        /// <summary>
-        /// returns an object that contains name and surname
-        /// </summary>
-        /// <param name="client2"></param>
-        /// <returns></returns>
-		public static dynamic Getnames()
+		
+		public dynamic Getnames()
 		{
 			HttpClient client = new HttpClient();
-			client.BaseAddress = new Uri(_url);
+			client.BaseAddress = new Uri(_endpoint);
 			var result = client.GetStringAsync("").Result;
 			return JsonConvert.DeserializeObject<dynamic>(result);
 		}
 
-		public static string[] GetCategories()
+		public List<String> GetCategories()
 		{
 			HttpClient client = new HttpClient();
-			client.BaseAddress = new Uri(_url);
+			client.BaseAddress = new Uri(_endpoint);
 
-			return new string[] { Task.FromResult(client.GetStringAsync("categories").Result).Result };
+			return new List<String> { Task.FromResult(client.GetStringAsync("categories").Result).Result };
 		}
     }
 }
