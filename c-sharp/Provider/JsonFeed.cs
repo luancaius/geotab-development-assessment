@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -49,12 +50,16 @@ namespace Provider
 			return JsonConvert.DeserializeObject<dynamic>(result);
 		}
 
-		public List<String> GetCategories()
+		public Task<List<String>> GetCategories()
 		{
-			HttpClient client = new HttpClient();
-			client.BaseAddress = new Uri(_endpoint);
+			using (HttpClient client = new HttpClient())
+			{
+				client.BaseAddress = new Uri(_endpoint);
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				var rawValues = client.GetStringAsync("categories");
 
-			return new List<String> { Task.FromResult(client.GetStringAsync("categories").Result).Result };
+				return JsonConvert.DeserializeObject<List<String>>(rawValues);
+			}
 		}
     }
 }
