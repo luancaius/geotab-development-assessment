@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Provider;
 using Service;
 using Service.Interfaces;
 
@@ -15,7 +14,7 @@ namespace UIConsole
     {
         private IMainService _mainService;
         private IOutput _console;
-        private List<String> _results;
+        private List<String> _categories;
         private Tuple<string, string> _names;
         
         public MyService(IMainService mainService, IOutput console)
@@ -23,46 +22,93 @@ namespace UIConsole
             _mainService = mainService;
             _console = console;
         }
-        public void Execute()
+
+        public async void Execute()
         {
-            _console.PrintNewLine(_mainService.GetStageContent(Stage.Start).Content);
-            if (Console.ReadLine() == "?")
+            var currentStage = Stage.Start;
+            while (true)
             {
-                while (true)
+                try
                 {
-                    _console.PrintNewLine(_mainService.GetStageContent(Stage.Options).Content);
-                    var key = Console.ReadKey();
-                    if (key.KeyChar == 'c')
+                    switch (currentStage)
                     {
-                        _results = _mainService.GetCategories();
-                        _console.PrintResults(_results);
-                    }
-                    if (key.KeyChar == 'r')
-                    {
-                        _console.PrintNewLine(_mainService.GetStageContent(Stage.Random).Content);
-                        key = Console.ReadKey();
-                        if (key.KeyChar == 'y')
-                            _names = _mainService.GetNames();
-                        _console.PrintNewLine(_mainService.GetStageContent(Stage.SpecifyCategory).Content);
-                        if (key.KeyChar == 'y')
-                        {
+                        case Stage.Start:
+                            _console.PrintNewLine(_mainService.GetStageContent(currentStage).Content);
+                            if (CheckInputLine("?"))
+                                currentStage = Stage.Options;
+                            break;
+                        case Stage.Options:
+                            _console.PrintNewLine(_mainService.GetStageContent(currentStage).Content);
+                            var input = GetInputKey();
+                            if (input == 'c')
+                            {
+                                _categories = await _mainService.GetCategories();
+                                _console.PrintResults(_categories);
+                            }
+                            else if (input == 'r')
+                            {
+                                currentStage = Stage.RandomName;
+                            }
+                            break;
+                        case Stage.RandomName:
+                            var category = string.Empty;
+                            _console.PrintNewLine(_mainService.GetStageContent(currentStage).Content);
+                            if (CheckInput('y'))
+                            {
+                                _names = await _mainService.GetNames();
+                            }
+                            _console.PrintNewLine(_mainService.GetStageContent(Stage.SpecifyCategory).Content);
+                            if (CheckInput('y'))
+                            {
+                                _categories = await _mainService.GetCategories();
+                                _console.PrintNewLine(_mainService.GetStageContent(Stage.EnterCategory).Content);
+                                category = ReadLine();
+                                if (!_categories.Contains(category))
+                                    break;
+                            }
                             _console.PrintNewLine(_mainService.GetStageContent(Stage.HowManyJokes).Content);
-                            int n = Int32.Parse(Console.ReadLine());
-                            _console.PrintNewLine("Enter a category;");
-                            _results = _mainService.GetRandomJokes(Console.ReadLine(), n);
-                            _console.PrintResults(_results);
-                        }
-                        else
-                        {
-                            _console.PrintNewLine(_mainService.GetStageContent(Stage.HowManyJokes).Content);
-                            int n = Int32.Parse(Console.ReadLine());
-                            _results = _mainService.GetRandomJokes(null, n);
-                            _console.PrintResults(_results);
-                        }
+                            int n = 0;
+                            var validNumber = Int32.TryParse(Console.ReadLine(), out n);
+                            if (validNumber && n <= 9 && n >= 1)
+                            {
+                                var jokes = await _mainService.GetRandomJokes(category, n);
+                                
+                            }
+                            
+                            break;
                     }
-                    _names = null;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    
+                    Console.WriteLine("Invalid option, try again!");
                 }
             }
+        }
+
+        private string ReadLine()
+        {
+            return Console.ReadLine();
+        }
+        
+        private bool CheckInputLine(string key)
+        {
+            var input = Console.ReadLine();
+            return input == key;
+        }
+        
+        private bool CheckInput(char key)
+        {
+            var input = Console.ReadKey();
+            return input.KeyChar == key;
+        }
+
+        private char GetInputKey()
+        {
+            var key = Console.ReadKey().KeyChar;
+            Console.WriteLine();
+            return key;
         }
     }
 }

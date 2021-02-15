@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Provider;
 using Service.Interfaces;
 
@@ -7,7 +8,6 @@ namespace Service
 {
     public class MainService : IMainService
     {
-        static char key;
         static Tuple<string, string> names;
         
         public StageContent GetStageContent(Stage stage)
@@ -16,22 +16,22 @@ namespace Service
             return stageContent;
         }
         
-        public List<String> GetRandomJokes(string category, int number)
+        public async Task<List<String>> GetRandomJokes(string category, int number)
         {
             var feed = new JsonFeed("https://api.chucknorris.io");
-            return feed.GetRandomJokes(names?.Item1, names?.Item2, category, number);
+            return await feed.GetRandomJokes(names?.Item1, names?.Item2, category, number);
         }
 
-        public List<String> GetCategories()
+        public async Task<List<String>> GetCategories()
         {
             var feed = new JsonFeed("https://api.chucknorris.io/jokes/categories");
-            return feed.GetCategories();
+            return await feed.GetCategories();
         }
 
-        public Tuple<string, string> GetNames()
+        public async Task<Tuple<string, string>> GetNames()
         {
             var feed = new JsonFeed("https://www.names.privserv.com/api/");
-            dynamic result = feed.Getnames();
+            dynamic result = await feed.Getnames();
             names = Tuple.Create(result.name.ToString(), result.surname.ToString());
             return names;
         }

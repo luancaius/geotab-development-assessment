@@ -4,8 +4,10 @@ namespace Service
     {
         Start,
         Options,
-        Random,
+        RandomName,
         SpecifyCategory,
-        HowManyJokes
+        EnterCategory,
+        HowManyJokes,
+        HowManyJokesByName
     }
 }

@@ -18,7 +18,7 @@ namespace Service.Util
 
         public void PrintResults(List<string> results)
         {
-            Console.WriteLine($"[{string.Join(",", results)}]");
+            Console.WriteLine($"\n[{string.Join(",", results)}]");
         }
     }
 }

@@ -14,11 +14,14 @@ namespace Service
                 case Stage.Options:
                     Content = "Press c to get categories\nPress r to get random jokes";
                     break;
-                case Stage.Random:
+                case Stage.RandomName:
                     Content = "Want to use a random name? y/n";
                     break;
                 case Stage.SpecifyCategory:
                     Content = "Want to specify a category? y/n";
+                    break;
+                case Stage.EnterCategory:
+                    Content = "Enter a category;";
                     break;
                 case Stage.HowManyJokes:
                     Content = "How many jokes do you want? (1-9)";
