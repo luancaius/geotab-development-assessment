@@ -34,8 +34,9 @@ namespace JokeGenerator
             if (firstname != null && lastname != null)
             {
                 int index = joke.IndexOf("Chuck Norris");
+                int chuckLength = "Chuck Norris".Length;
                 string firstPart = joke.Substring(0, index);
-                string secondPart = joke.Substring(0 + index + "Chuck Norris".Length, joke.Length - (index + "Chuck Norris".Length));
+                string secondPart = joke.Substring(0 + index + chuckLength, joke.Length - (index + chuckLength));
                 joke = firstPart + " " + firstname + " " + lastname + secondPart;
             }
 
