@@ -15,3 +15,17 @@ Improve this software considering the following aspects;
 3. Reliability & Quality 
 
 It's possible that there are existing bugs within this solution - make sure to fix those as well.
+
+---
+
+# Code changes:
+* Added 2 layers, one for services and another for providers.
+* Added interfaces and DI for tests and mocks.
+* Fixed bug with categories and number of jokes.
+* Changed the follow in order to increase maintainance.
+* Changed methods to async.
+
+# Next steps:
+1. Add a RESTFUL API without changing the service layer
+2. Add unit tests for service and provider layers
+3. Add integration tests to UI layer.
