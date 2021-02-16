@@ -7,7 +7,6 @@ namespace Service
         RandomName,
         SpecifyCategory,
         EnterCategory,
-        HowManyJokes,
-        HowManyJokesByName
+        HowManyJokes
     }
 }

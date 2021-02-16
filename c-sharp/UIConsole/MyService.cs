@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Service;
 using Service.Interfaces;
+using Service.Util;
 
 namespace UIConsole
 {
@@ -64,25 +65,30 @@ namespace UIConsole
                                 _console.PrintNewLine(_mainService.GetStageContent(Stage.EnterCategory).Content);
                                 category = ReadLine();
                                 if (!_categories.Contains(category))
+                                {
+                                    _console.PrintNewLine("Error: Category not found");
                                     break;
+                                }
                             }
                             _console.PrintNewLine(_mainService.GetStageContent(Stage.HowManyJokes).Content);
                             int n = 0;
                             var validNumber = Int32.TryParse(Console.ReadLine(), out n);
                             if (validNumber && n <= 9 && n >= 1)
                             {
-                                var jokes = await _mainService.GetRandomJokes(category, n);
-                                
+                                var jokes = await _mainService.GetRandomJokes(category, n, _names);
+                                _console.PrintResultsPerLine(jokes);
                             }
-                            
+                            else
+                            {
+                                _console.PrintNewLine("Invalid number!");
+                            }
                             break;
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    
-                    Console.WriteLine("Invalid option, try again!");
+                    Console.WriteLine("Exception happened, please try again!");
+                    Console.WriteLine($"Exception: {e.Message}");
                 }
             }
         }

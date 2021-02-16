@@ -9,5 +9,7 @@ namespace Service.Interfaces
         void Print(string result);
 
         void PrintResults(List<String> results);
+        
+        void PrintResultsPerLine(List<String> results);
     }
 }

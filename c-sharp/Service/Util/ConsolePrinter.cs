@@ -20,5 +20,15 @@ namespace Service.Util
         {
             Console.WriteLine($"\n[{string.Join(",", results)}]");
         }
+        
+        public void PrintResultsPerLine(List<string> results)
+        {
+            var index = 1;
+            foreach (var result in results)
+            {
+                Console.WriteLine($"{index} - {result}");
+                index++;
+            }
+        }
     }
 }
